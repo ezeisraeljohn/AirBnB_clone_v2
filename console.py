@@ -114,36 +114,44 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        
-        """
-        A function  Creates a new instance of BaseModel,
-        saves it (to the JSON file) and prints the id
-        """
+
+        """ Create an object of any class"""
         if not args:
             print("** class name missing **")
             return
-
-        params_list = args.split(" ")
-        keyvalue = {}
-
-        for param in params_list[1:]:
-            param_splited = param.split("=")
-            if len(param_splited) == 2:
-                param_splited[1] = eval(param_splited[1])
-
-                if isinstance(param_splited[1], str):
-                    param_splited[1] = param_splited[1].replace(
-                            "_", " ").replace('"', '\\"')
-
-                keyvalue[param_splited[0]] = param_splited[1]
-
-        if param_splited[0] not in HBNBCommand.classes:
+        line = args.split()
+        if line[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
+        new_instance = HBNBCommand.classes[line[0]]()
+        i = 1
+        while i < len(line):
+            parm = re.search('(.*)=(.*)', line[i])
+            if parm is None:
+                i += 1
+                continue
+            key_name = parm.group(1)
+            value = parm.group(2)
+            if value[0] == '"' and value[-1] == '"':
+                string = value[1:-1]
+                string = string.replace('_', ' ' )
+                string = string.replace('\\"' ,'"')
+                setattr(new_instance, key_name, string)
+            else:
+                try:
+                    int_value = int(value)
+                    setattr(new_instance, key_name, int_value)
+                except ValueError:
+                    try:
+                        float_value = float(value)
+                        setattr(new_instance, key_name, float_value)
+                    except ValueError:
+                    pass
+            i += 1
 
-        new_instance = HBNBCommand.classes[param_splited[0]](**keyvalue)
-        storage.save()
+        storage.new(new_instance)
         print(new_instance.id)
+        storage.save()
 
 
     def help_create(self):
