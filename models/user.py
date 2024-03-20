@@ -23,13 +23,7 @@ class User(BaseModel, Base):
 
     email = Column(String(128), nullable=False)
     password = Column(String(128), nullable=False)
-<<<<<<< HEAD
     first_name = Column(String(128), nullable=False)
     last_name = Column(String(128), nullable=False)
     places = relationship("Place", backref="user")
-=======
-    first_name = Column(String(128)
-    last_name = Column(String(128), nullable)
-    places = relationship("Place", cascade='all, delete' backref="user")
-    review = relationship("Review", cascade='all, delete' backref="user")
->>>>>>> update place
+
