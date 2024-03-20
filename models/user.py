@@ -6,9 +6,8 @@
 from models.base_model import BaseModel, Base
 from models.place import place
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from sqlalachemy.ext.declarative import declarative_base
 
 
 class User(BaseModel, Base):
@@ -23,6 +22,6 @@ class User(BaseModel, Base):
 
     email = Column(String(128), nullable=False)
     password = Column(String(128), nullable=False)
-    first_name = Column(String(128)
-    last_name = Column(String(128), nullable)
-    places = relationship("Place", cascade='all, delete' backref="user")
+    first_name = Column(String(128), nullable=False)
+    last_name = Column(String(128), nullable=False)
+    places = relationship("Place", backref="user")
