@@ -62,3 +62,11 @@ class FileStorage:
                 if key in self.__objects:
                     del self.__objects[key]
                 self.save()
+
+    def get_cities(self, state_id):
+        """Returns a list of city objects based on state id"""
+        cities = []
+        for key, val in self.__objects.items():
+            if 'City' in key and val.state_id == state_id:
+                cities.append(val)
+        return cities
