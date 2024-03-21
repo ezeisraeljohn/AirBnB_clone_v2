@@ -122,30 +122,6 @@ class HBNBCommand(cmd.Cmd):
         if line[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[line[0]]()
-        i = 1
-        while i < len(line):
-            param = line[i]
-            if '=' not in param:
-                i += 1
-                continue
-            key_name, value = param.split('=')
-            if value.startswith('"') and value.endswith('"'):
-                string = value[1:-1]
-                string = string.replace('_', ' ')
-                string = string.replace('\\"', '"')
-                setattr(new_instance, key_name, string)
-            elif '.' in value:
-                try:
-                    setattr(new_instance, key_name, float(value))
-                except ValueError:
-                    print(f"** invalid value for parameter {key_name} **")
-            else:
-                try:
-                    setattr(new_instance, key_name, int(value))
-                except ValueError:
-                    print(f"** invalid value for parameter {key_name} **")
-            i += 1
         storage.new(new_instance)
         print(new_instance.id)
         storage.save()
