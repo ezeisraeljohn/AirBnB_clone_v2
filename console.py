@@ -10,6 +10,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+from models import storage
 
 
 class HBNBCommand(cmd.Cmd):
@@ -113,18 +114,48 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
     
-    def do_create(self, args):
-        """ Create an object of any class"""
-        if not args:
+    def do_create(self, arg):
+        """ Creates a new instance of a class with given parameters """
+        if not arg:
             print("** class name missing **")
             return
-        line = args.split()
-        if line[0] not in HBNBCommand.classes:
+        args = arg.split()
+        class_name = args[0]
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        storage.new(new_instance)
+        # Remove class name from args
+        args = args[1:]
+        # Create a dictionary to store the attributes
+        attributes = {}
+        for param in args:
+            # Split the parameter into key and value
+            param_parts = param.split('=')
+            if len(param_parts) != 2:
+                continue
+            key = param_parts[0]
+            value = param_parts[1]
+            # Handle string values
+            if value.startswith('"') and value.endswith('"'):
+                value = value[1:-1].replace('_', ' ')
+            # Handle float values
+            elif '.' in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    continue
+            # Handle integer values
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    continue
+            # Add the attribute to the dictionary
+            attributes[key] = value
+        # Create a new instance of the class with the attributes
+        new_instance = HBNBCommand.classes[class_name](**attributes)
+        new_instance.save()
         print(new_instance.id)
-        storage.save()
    
     def help_create(self):
         """ Help information for the create method """
