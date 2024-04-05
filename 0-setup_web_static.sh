@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#Configuring two web servers
 
 # Install nginx if not already installed
 sudo apt-get update
@@ -31,5 +32,7 @@ config_content="server {
 
 echo "$config_content" | sudo tee /etc/nginx/sites-available/default
 
+# Create a symbolic link to the new configuration
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 # Restart nginx
 sudo service nginx restart
