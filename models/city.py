@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import declarative_base
 
-class City(BaseModel):
+class City(BaseModel, Base):
     """ The city class, contains state ID and name """
 
 
