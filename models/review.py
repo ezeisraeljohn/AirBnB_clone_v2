@@ -5,7 +5,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 from sqlalchemy import ForeignKey
 
-class Review(BaseModel):
+class Review(BaseModel, Base):
     """ Review class inherits from basemodel and base
     to store review information
     Attributes:
@@ -16,6 +16,7 @@ class Review(BaseModel):
     """
 
     __tablename__ = "reviews"
-    place_id = Column(String(60), ForeignKey("place.id"), nullable=False)
-    user_id = Column(String(60), ForeignKey("user.id"), nullable=False)
+    id = Column(String(60), primary_key=True)
+    place_id = Column(String(60), ForeignKey("places.id"), nullable=False)
+    user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
     text = Column(String(1024), nullable=False)
