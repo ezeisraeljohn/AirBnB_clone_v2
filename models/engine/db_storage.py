@@ -120,6 +120,10 @@ class DBStorage():
 		if obj:
 			self.__session.delete(obj)
 
+	def close(self):
+		""" Close a session"""
+		self.__session.remove()
+
 	def reload(self):
 		"""Loads storage dictionary from file
 		
