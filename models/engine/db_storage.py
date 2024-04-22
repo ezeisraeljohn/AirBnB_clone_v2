@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 
-""" DBStorage module for the HBNB project 
+""" DBStorage module for the HBNB project
     This module defines a class DBStorage
     that inherits from BaseStorage
-    
+
     example:
     storage = DBStorage()
     storage.reload()
-	storage.all()
-	storage.new(obj)
+    storage.all()
+    storage.new(obj)
 """
 
 import os
@@ -25,111 +25,111 @@ from models.review import Review
 
 
 class DBStorage():
-	"""This class defines a DBStorage class
-	that inherits from BaseStorage
+    """This class defines a DBStorage class
+    that inherits from BaseStorage
 
-	Attributes:
-		__engine: None
-		__session: None
+    Attributes:
+        __engine: None
+        __session: None
 
-	Methods:
-		__init__(self): constructor
-		all(self, cls=None): returns a dictionary
-		new(self, obj): adds a new object to the session
-		save(self): commits all changes of the current session
-		delete(self, obj=None): deletes an object from the current session
-		reload(self): creates all tables in the database
+    Methods:
+        __init__(self): constructor
+        all(self, cls=None): returns a dictionary
+        new(self, obj): adds a new object to the session
+        save(self): commits all changes of the current session
+        delete(self, obj=None): deletes an object from the current session
+        reload(self): creates all tables in the database
 
-	Returns:
-		None
-	"""
-	
-	__engine = None
-	__session = None
+    Returns:
+        None
+    """
 
-	def __init__(self):
-		"""Constructor for DBStorage class
-		creates the engine and session
-		"""
+    __engine = None
+    __session = None
 
-		user = os.getenv('HBNB_MYSQL_USER')
-		pwd = os.getenv('HBNB_MYSQL_PWD')
-		host = os.getenv('HBNB_MYSQL_HOST')
-		db = os.getenv('HBNB_MYSQL_DB')
+    def __init__(self):
+        """Constructor for DBStorage class
+        creates the engine and session
+        """
 
-		self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
-									  .format(user, pwd, host, db),
-									  pool_pre_ping=True)
-		if os.getenv('HBNB_ENV') == "test":
-			Base.metadata.drop_all(self.__engine)
+        user = os.getenv('HBNB_MYSQL_USER')
+        pwd = os.getenv('HBNB_MYSQL_PWD')
+        host = os.getenv('HBNB_MYSQL_HOST')
+        db = os.getenv('HBNB_MYSQL_DB')
 
-	def all(self, cls=None):
-		"""Returns a dictionary of models currently in storage
-		 
-		Args:
-			cls: class name
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
+                                      .format(user, pwd, host, db),
+                                      pool_pre_ping=True)
+        if os.getenv('HBNB_ENV') == "test":
+            Base.metadata.drop_all(self.__engine)
 
-		Returns:
-			dictionary of models currently in storage
-		   """
-		classes = [State, City, User, Place, Amenity, Review]
-		storage_dict = {}
-		if cls:
-			if cls in classes:
-				objects = self.__session.query(cls).all()
-				for obj in objects:
-					key = "{}.{}".format(obj.__class__.__name__, obj.id)
-					storage_dict[key] = obj
-			return storage_dict
-		else:
-			for cls in classes:
-				objects = self.__session.query(cls).all()
-				for obj in objects:
-					key = "{}.{}".format(obj.__class__.__name__, obj.id)
-					storage_dict[key] = obj
-			return storage_dict
-		
-	def new(self, obj):
-		"""Adds new object to storage dictionary
-		
-		Args:
-			obj: object to be added to storage dictionary
-		
-		Returns:
-			None
-		"""
-		self.__session.add(obj)
+    def all(self, cls=None):
+        """Returns a dictionary of models currently in storage
 
-	def save(self):
-		"""Saves storage dictionary to file
-		
-		Returns:
-			None
-		"""
-		self.__session.commit()
-	
-	def delete(self, obj=None):
-		"""Delete obj from __objects if it’s inside
-		
-		Args:
-			obj: object to be deleted
-		
-		Returns:
-			None
-		"""
-		if obj:
-			self.__session.delete(obj)
+        Args:
+            cls: class name
 
-	def close(self):
-		""" Close a session"""
-		self.__session.remove()
+        Returns:
+            dictionary of models currently in storage
+           """
+        classes = [State, City, User, Place, Amenity, Review]
+        storage_dict = {}
+        if cls:
+            if cls in classes:
+                objects = self.__session.query(cls).all()
+                for obj in objects:
+                    key = "{}.{}".format(obj.__class__.__name__, obj.id)
+                    storage_dict[key] = obj
+            return storage_dict
+        else:
+            for cls in classes:
+                objects = self.__session.query(cls).all()
+                for obj in objects:
+                    key = "{}.{}".format(obj.__class__.__name__, obj.id)
+                    storage_dict[key] = obj
+            return storage_dict
 
-	def reload(self):
-		"""Loads storage dictionary from file
-		
-		Returns:
-			None
-		"""
-		Base.metadata.create_all(self.__engine)
-		Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
-		self.__session = scoped_session(Session)
+    def new(self, obj):
+        """Adds new object to storage dictionary
+
+        Args:
+            obj: object to be added to storage dictionary
+
+        Returns:
+            None
+        """
+        self.__session.add(obj)
+
+    def save(self):
+        """Saves storage dictionary to file
+
+        Returns:
+            None
+        """
+        self.__session.commit()
+
+    def delete(self, obj=None):
+        """Delete obj from __objects if it’s inside
+
+        Args:
+            obj: object to be deleted
+
+        Returns:
+            None
+        """
+        if obj:
+            self.__session.delete(obj)
+
+    def close(self):
+        """ Close a session"""
+        self.__session.remove()
+
+    def reload(self):
+        """Loads storage dictionary from file
+
+        Returns:
+            None
+        """
+        Base.metadata.create_all(self.__engine)
+        Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        self.__session = scoped_session(Session)
